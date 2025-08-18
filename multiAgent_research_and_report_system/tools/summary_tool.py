@@ -2,6 +2,9 @@ from langchain_core.tools import tool
 from typing import Annotated
 from pathlib import Path
 
+WORKING_DIRECTORY = Path(__file__).parent.parent.parent / "summaries"
+WORKING_DIRECTORY.mkdir(parents=True, exist_ok=True)
+
 @tool
 def create_summary(
     content: Annotated[str, "Research content to summarize"],
@@ -10,7 +13,7 @@ def create_summary(
     """Create and save a summary from research content."""
     # Ensure the file has a .txt extension for summaries
     
-    WORKING_DIRECTORY = Path.cwd()
+    
     
     if not file_name.endswith(('.txt', '.md')):
         file_name = file_name.rsplit(".", 1)[0] + ".txt" if "." in file_name else file_name + ".txt"

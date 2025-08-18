@@ -10,10 +10,11 @@ from multiAgent_research_and_report_system.src.agent_state import State
 
 def getDocumentGeneratorAgent():
     llm = model_loader()
+    document_generator_prompt = PROMPT_REGISTRY["document_generator"]
     doc_generator_agent = create_react_agent(
         llm,
         tools=[create_document, read_file],
-        prompt="You are a document generator. Read summary files using read_file tool, then create comprehensive documents and ALWAYS save them using the create_document tool with an appropriate filename."
+        prompt=document_generator_prompt
     )
     return doc_generator_agent
 

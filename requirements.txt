@@ -1,0 +1,16 @@
+structlog
+langgraph
+langchain
+langchain-community
+langchain-core
+pydantic
+pyyaml
+httpx
+beautifulsoup4
+readability-lxml
+duckduckgo-search
+tavily-python
+tiktoken
+python-dotenv
+rich
+pytest

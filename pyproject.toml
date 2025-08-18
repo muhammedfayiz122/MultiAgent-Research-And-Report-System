@@ -1,0 +1,23 @@
+[project]
+name = "multiAgent_research_and_report_system"
+version = "0.1.0"
+description = """
+MARRS is a hierarchical multi-agent framework that automates research, summarization, and document generation. It uses specialized agents for medical and financial research, supervised coordination for task routing, and dedicated generator agents to create concise summaries and detailed reports. This system ensures real-time, accurate insights and produces well-structured documents with minimal manual effort.
+"""
+authors = [
+    { name = "Muhammed Fayiz", email = "muhammedfayiz122@gmail.com" }
+]
+readme = "README.md"
+license = { text = "MIT License", url = "https://opensource.org/licenses/MIT" }
+requires-python = ">=3.10"
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/muhammedfayiz122/MultiAgent-Research-And-Report-System"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["multiAgent_research_and_report_system"]

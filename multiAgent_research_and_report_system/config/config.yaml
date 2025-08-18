@@ -1,0 +1,27 @@
+
+dev_logger:
+  log_dir: "logs"
+  log_level: "DEBUG"
+  log_max_bytes: 5242880      # 5 MB
+  log_backup_count: 50
+
+  file_format: "[%(asctime)s] %(levelname)s: %(message)s"
+  console_format: "%(log_color)s[%(asctime)s] [%(levelname)s] [%(filename)s:%(lineno)d] - %(message)s"
+  date_format: "%m_%d_%Y_%H_%M_%S"
+
+cloud_logger:
+  log_dir: "logs"
+  log_max_bytes: 5242880      # 5 MB
+  log_backup_count: 50
+
+  date_format: "%m_%d_%Y_%H_%M_%S"
+
+  file_handler:
+    format: "%(message)s"
+    level: "INFO"
+  console_handler:
+    format: "%(message)s"
+    level: "INFO"
+  basic_config:
+    format: "%(message)s"
+    level: "INFO"

@@ -8,23 +8,27 @@ from multiAgent_research_and_report_system.tools.search_tool import enhanced_sea
 from multiAgent_research_and_report_system.utils.model_loader import model_loader
 from multiAgent_research_and_report_system.src.agent_state import State
 
-
-
-def medical_research_node(state: State) -> Command[Literal["research_supervisor"]]:
+def getFinanceResearchAgent():
+    """
+    Get a finance research agent.
+    """
     llm = model_loader()
-    medical_research_prompt = prompt.PROMPT_REGISTRY["medical_research"]
-    # Medical/Pharma Research Agent
-    medical_research_agent = create_react_agent(
-        llm, 
-        tools=[enhanced_search],
-        prompt=medical_research_prompt,
-    )
+    finance_research_prompt = prompt.PROMPT_REGISTRY["finance_research"]
     
-    result = medical_research_agent.invoke(state)
+    finance_research_agent = create_react_agent(
+        llm,
+        tools=[enhanced_search],
+        prompt=finance_research_prompt
+    )
+    return finance_research_agent
+
+def finance_research_node(state: State) -> Command[Literal["research_supervisor"]]:
+    finance_research_agent = getFinanceResearchAgent()
+    result = finance_research_agent.invoke(state)
     return Command(
         update={
             "messages": [
-                HumanMessage(content=result["messages"][-1].content, name="medical_researcher")
+                HumanMessage(content=result["messages"][-1].content, name="finance_researcher")
             ]
         },
         goto="research_supervisor",

@@ -1,9 +1,11 @@
+from logging import log
 import streamlit as st
-import datetime
 import os
 import uuid
 from multiAgent_research_and_report_system.graph.supervisor import getSupervisorGraph
+from multiAgent_research_and_report_system.logger.cloud_logger import CustomLogger
 
+log = CustomLogger().get_logger(__name__)
 # --- Streamlit Page Config ---
 st.set_page_config(page_title="MARRS - MultiAgent Research & Report System", layout="wide")
 
@@ -39,8 +41,15 @@ if st.button("Run Agent System"):
             {"messages": [("user", query)]},
             {"recursion_limit": 100}
         ):
-            st.write(message)
-
+            log.info(message)
+            print(message)
+            try:
+                for agent in message:
+                    msg = message[agent]["messages"][0]
+                    with st.chat_message(agent,avatar='👤'):
+                        st.markdown(eval(msg).content)
+            except:
+                st.markdown(message)
 
         # --- Download Button if report generated ---
         generated_file = f"sessions/report.txt"

@@ -8,7 +8,7 @@ import structlog
 class CustomLogger():
     def __init__(self, log_dir="logs"): 
         # Loading configurations  
-        config = load_config("cloud_logger")
+        config = load_config()["cloud_logger"]
         
         self.file_level = config['file_handler']['level'].upper()
         self.file_format = config['file_handler']['format']

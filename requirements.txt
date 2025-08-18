@@ -15,3 +15,6 @@ python-dotenv
 rich
 pytest
 streamlit
+weasyprint
+markdown
+weasyprint[images]

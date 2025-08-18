@@ -8,11 +8,13 @@ from multiAgent_research_and_report_system.tools.search_tool import enhanced_sea
 from multiAgent_research_and_report_system.utils.model_loader import model_loader
 from multiAgent_research_and_report_system.src.agent_state import State
 
+llm = model_loader()
+
 def getFinanceResearchAgent():
     """
     Get a finance research agent.
     """
-    llm = model_loader()
+    # llm = model_loader()
     finance_research_prompt = prompt.PROMPT_REGISTRY["finance_research"]
     
     finance_research_agent = create_react_agent(

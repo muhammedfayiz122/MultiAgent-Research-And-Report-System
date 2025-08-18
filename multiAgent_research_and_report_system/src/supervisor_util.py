@@ -5,18 +5,12 @@ from langgraph.graph import END
 from langgraph.types import Command
 from typing_extensions import TypedDict
 from multiAgent_research_and_report_system.src.agent_state import State
+from multiAgent_research_and_report_system.prompts.prompt import PROMPT_REGISTRY
 
 
 def make_supervisor_node(llm: BaseChatModel, members: list[str]) -> Callable:
     options = ["FINISH"] + members
-    system_prompt = (
-        "You are a supervisor tasked with managing a conversation between the"
-        f" following workers: {members}. Given the following user request,"
-        " respond with the worker to act next. Each worker will perform a"
-        " task and respond with their results and status. When finished,"
-        " respond with FINISH."
-    )
-    
+    system_prompt = PROMPT_REGISTRY["supervisor"].format(members=", ".join(members))
     class Router(TypedDict):
         """Worker to route to next. If no workers needed, route to FINISH."""
         next: Literal[*options] #type: ignore

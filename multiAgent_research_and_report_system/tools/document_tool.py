@@ -2,7 +2,8 @@ from langchain_core.tools import tool
 from typing import Annotated
 from pathlib import Path
 
-WORKING_DIRECTORY = Path(__file__).parent.parent.parent / "summaries"
+WORKING_DIRECTORY = Path(__file__).parent.parent.parent / "sessions"
+print(WORKING_DIRECTORY)
 WORKING_DIRECTORY.mkdir(parents=True, exist_ok=True)
 
 @tool

@@ -3,18 +3,21 @@ from langchain_core.messages import HumanMessage
 from langgraph.types import Command
 
 from langgraph.prebuilt import create_react_agent
+from multiAgent_research_and_report_system.prompts import prompt
 from multiAgent_research_and_report_system.tools.search_tool import enhanced_search
 from multiAgent_research_and_report_system.utils.model_loader import model_loader
+from multiAgent_research_and_report_system.src.agent_state import State
 
 
 
 def medical_research_node(state: State) -> Command[Literal["research_supervisor"]]:
     llm = model_loader()
+    medical_research_prompt = prompt.PROMPT_REGISTRY["medical_research"]
     # Medical/Pharma Research Agent
     medical_research_agent = create_react_agent(
         llm, 
         tools=[enhanced_search],
-        prompt="You are a medical and pharmaceutical research specialist. Use the enhanced_search tool to find the most current and real-time information on medical, healthcare, pharmaceutical, and biotech topics. Focus on recent developments, breaking news, clinical studies, regulatory updates, and industry trends. Provide detailed research on health-related queries with emphasis on current data."
+        prompt=medical_research_prompt,
     )
     
     result = medical_research_agent.invoke(state)

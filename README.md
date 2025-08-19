@@ -45,15 +45,7 @@ Use this system to:
 ##  Architecture & Workflow
 
 ```
-User Query
-    ↓
-Supervisor Agent → Classifies the task
-    ↙       ↘           ↘
-Medical   Financial   Summary/Report
-Research  Research    Generator
-  Agent     Agent        Agent
-
-      ⬇ Outputs (in session folder with download links)
+![MARRS Architecture & Workflow](img/graph.png)
 ```
 
 - Inputs are processed via a **supervisor agent**.

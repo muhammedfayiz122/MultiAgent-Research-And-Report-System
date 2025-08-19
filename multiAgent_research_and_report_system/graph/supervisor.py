@@ -51,12 +51,17 @@ def make_supervisor_node(llm: BaseChatModel, members: list[str]) -> Callable:
     return supervisor_node
 
 def getSupervisorNode():
+    """
+    Get the supervisor node .
+    """
     # llm = model_loader()
     supervisor_node = make_supervisor_node(llm, ["research_supervisor", "report_supervisor"])
     return supervisor_node
 
 def callResearchTeam(state: State) -> Command[Literal["supervisor"]]:
-    """Call the research team and return results to supervisor."""
+    """
+    Call the research team and return results to supervisor.
+    """
     research_graph = getResearchTeamGraph(llm)
     response = research_graph.invoke({"messages": state["messages"]}) #type: ignore
     return Command(
@@ -72,12 +77,18 @@ def callResearchTeam(state: State) -> Command[Literal["supervisor"]]:
     )
     
 def callReportTeam(state: State) -> Command[Literal["supervisor"]]:
-    """Call the report team and return results to main supervisor."""
+    """
+    Call the report team and return results to main supervisor.
+    """
     report_graph = getReportTeamGraph(llm)
+
+    # Invoke the report team graph
     response = report_graph.invoke(
         {"messages": state["messages"]}, #type: ignore
         {"recursion_limit": 20}
-    ) 
+    )
+
+    # Extract the last message
     message = str(response["messages"][-1].content)
     return Command(
         update={
@@ -92,7 +103,10 @@ def callReportTeam(state: State) -> Command[Literal["supervisor"]]:
     )
 
 def getSupervisorGraph():
-    # llm = model_loader()
+    """
+    Get the supervisor graph which includes the research and report teams.
+    """
+    # Get the supervisor node.
     supervisor_node = getSupervisorNode()
 
     # Combine the graphs

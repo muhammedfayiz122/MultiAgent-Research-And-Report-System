@@ -1,72 +1,81 @@
 import markdown
 from weasyprint import HTML, CSS
 from langchain_core.tools import tool
-from typing import Annotated
+from typing import Annotated, Optional
 from pathlib import Path
 import warnings
+import os
 
 warnings.filterwarnings("ignore")
-# import markdown2
-# from reportlab.platypus import SimpleDocTemplate, Paragraph
-# from reportlab.lib.styles import getSampleStyleSheet
 
-# import pypandoc
+os.environ["FONTCONFIG_PATH"] = "NUL"         # For Windows
+os.environ["G_MESSAGES_DEBUG"] = "none"       # For GLib/GIO warnings
 
-WORKING_DIRECTORY = Path(__file__).parent.parent.parent / "summaries"
-WORKING_DIRECTORY.mkdir(parents=True, exist_ok=True)
+WORKING_DIRECTORY = Path(__file__).parent.parent.parent / "session"
+
 FILE_NAME = "report.pdf"
 
 @tool
 def create_pdf_tool(
-    content: Annotated[str, "Markdown Content that should be written into the document"]
+    file_name: Annotated[Optional[str], "File name to store as file (optional)"] = FILE_NAME,
+    content: Annotated[str, "Markdown Content that should be written into the document"] = ""
 ) -> Annotated[str, "Path of the saved document file"]:
     """
     PDF creation tool from markdown content
     """
-    # Markdown content
-    md_text = content
+    try:
+        # Determine file path
+        file_name = file_name or FILE_NAME
+        file_path = WORKING_DIRECTORY / file_name
+        
+        if not file_path.parent.exists():
+            file_path.parent.mkdir(parents=True, exist_ok=True)
+        # Markdown content
+        md_text = content
 
-    # ✅ Convert Markdown to HTML
-    html_body = markdown.markdown(md_text, extensions=["extra", "sane_lists"])
+        # ✅ Convert Markdown to HTML
+        html_body = markdown.markdown(md_text, extensions=["extra", "sane_lists"])
 
-    # ✅ Wrap inside a full HTML page with CSS
-    html_full = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <meta charset="utf-8">
-    <style>
-        body {{
-        font-family: Arial, sans-serif;
-        line-height: 1.6;
-        margin: 10px;
-        }}
-        h3 {{
-        color: #2c3e50;
-        margin-top: 20px;
-        margin-bottom: 10px;
-        }}
-        ul {{
-        margin-bottom: 15px;
-        }}
-        li {{
-        margin-bottom: 6px;
-        }}
-        strong {{
-        color: #000;
-        }}
-    </style>
-    </head>
-    <body>
-    {html_body}
-    </body>
-    </html>
-    """
+        # ✅ Wrap inside a full HTML page with CSS
+        html_full = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <meta charset="utf-8">
+        <style>
+            body {{
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 10px;
+            }}
+            h3 {{
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            }}
+            ul {{
+            margin-bottom: 15px;
+            }}
+            li {{
+            margin-bottom: 6px;
+            }}
+            strong {{
+            color: #000;
+            }}
+        </style>
+        </head>
+        <body>
+        {html_body}
+        </body>
+        </html>
+        """
 
-    # ✅ Generate proper PDF
-    HTML(string=html_full).write_pdf("report.pdf")
+        # ✅ Generate proper PDF
+        HTML(string=html_full).write_pdf(file_path)
 
-    return "PDF saved as report.pdf"
+        return f"PDF saved as {file_path}"
+    except Exception as e:
+        return f"Error creating PDF: {str(e)}"
 
 # @tool
 # def pdf_maker(query:str):

@@ -15,6 +15,9 @@ from langgraph.types import Command
 from typing_extensions import TypedDict
 from multiAgent_research_and_report_system.src.agent_state import State
 from multiAgent_research_and_report_system.prompts.prompt import PROMPT_REGISTRY
+from multiAgent_research_and_report_system.logger.cloud_logger import CustomLogger
+
+log = CustomLogger().get_logger(__name__)
 
 llm = model_loader()
 
@@ -27,20 +30,29 @@ def make_supervisor_node(llm: BaseChatModel, members: list[str]) -> Callable:
 
     def supervisor_node(state: State) -> Command[Literal[*members, "__end__"]]: #type: ignore
         """An LLM-based router."""
+        message_count = len(state["messages"])
         messages = [
             {"role": "system", "content": system_prompt},
         ] + state["messages"]
         response = llm.with_structured_output(Router).invoke(messages)
+        log.info(f"Supervisor response: {response}")
+        print(f"from supervisor: \n{response}")
         goto = response["next"] #type: ignore
-        if goto == "FINISH":
+        last_message = str(state["messages"][-1].content).lower()
+        if goto == "FINISH" or last_message.endswith("finish."):
             goto = END
+            log.info(f"Overall state is : {state}")
+        elif message_count > 1 and goto == members[0]:
+            log.warning(f"Forced handoff to stop looping")
+            print("Forced handoff to stop looping")
+            goto = members[1]
         return Command(goto=goto, update={"next": goto})
     
     return supervisor_node
 
 def getSupervisorNode():
     # llm = model_loader()
-    supervisor_node = make_supervisor_node(llm, ["research_team", "report_team"])
+    supervisor_node = make_supervisor_node(llm, ["research_supervisor", "report_supervisor"])
     return supervisor_node
 
 def callResearchTeam(state: State) -> Command[Literal["supervisor"]]:
@@ -52,7 +64,7 @@ def callResearchTeam(state: State) -> Command[Literal["supervisor"]]:
             "messages": [
                 HumanMessage(
                     content=response["messages"][-1].content, 
-                    name="research_team"
+                    name="research_supervisor"
                 )
             ]
         },
@@ -62,13 +74,17 @@ def callResearchTeam(state: State) -> Command[Literal["supervisor"]]:
 def callReportTeam(state: State) -> Command[Literal["supervisor"]]:
     """Call the report team and return results to main supervisor."""
     report_graph = getReportTeamGraph(llm)
-    response = report_graph.invoke({"messages": state["messages"]}) #type: ignore
+    response = report_graph.invoke(
+        {"messages": state["messages"]}, #type: ignore
+        {"recursion_limit": 20}
+    ) 
+    message = str(response["messages"][-1].content)
     return Command(
         update={
             "messages": [
                 HumanMessage(
-                    content=response["messages"][-1].content, 
-                    name="report_team"
+                    content=message, 
+                    name="report_supervisor"
                 )
             ]
         },
@@ -82,8 +98,8 @@ def getSupervisorGraph():
     # Combine the graphs
     supervisor_graph_builder = StateGraph(State)
     supervisor_graph_builder.add_node("supervisor", supervisor_node)
-    supervisor_graph_builder.add_node("research_team", callResearchTeam)
-    supervisor_graph_builder.add_node("report_team", callReportTeam)
+    supervisor_graph_builder.add_node("research_supervisor", callResearchTeam)
+    supervisor_graph_builder.add_node("report_supervisor", callReportTeam)
     supervisor_graph_builder.add_edge(START, "supervisor")
     supervisor_graph = supervisor_graph_builder.compile()
     return supervisor_graph

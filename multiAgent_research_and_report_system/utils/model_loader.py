@@ -8,7 +8,7 @@ import sys
 import os
 
 load_dotenv()
-api_key = os.environ.get("GOOGLE_API_KEY")
+api_key = os.environ.get("GOOGLE_API_KEY1")
 
 log = CustomLogger().get_logger(__name__)
 
@@ -19,7 +19,7 @@ def _validate_env():
     Validate necessary environment variables.
     Ensure API keys exist.
     """
-    required_vars=["GOOGLE_API_KEY","GROQ_API_KEY1"]
+    required_vars=["GOOGLE_API_KEY1","GROQ_API_KEY1"]
     api_keys={key:os.getenv(key) for key in required_vars}
     missing = [k for k, v in api_keys.items() if not v]
     if missing:
@@ -37,7 +37,7 @@ def model_loader():
 
     # log.info("Loading LLM...")
 
-    provider_key = os.getenv("LLM_PROVIDER", "groq")  # Default google
+    provider_key = os.getenv("LLM_PROVIDER", "google")  # Default google
     if provider_key not in llm_block:
         log.error("LLM provider not found in config", provider_key=provider_key)
         raise ValueError(f"Provider '{provider_key}' not found in config")
@@ -54,6 +54,7 @@ def model_loader():
         llm=ChatGoogleGenerativeAI(
             model=model_name,
             temperature=temperature,
+            api_key=api_keys["GOOGLE_API_KEY1"],
             max_output_tokens=max_tokens
         )
         return llm
@@ -71,5 +72,7 @@ def model_loader():
         raise CustomException(f"Unsupported LLM provider: {provider}", sys)
 
 if __name__ == "__main__":
-    llm = load_llm()
-    llm.invoke("hi")
+    # llm = load_llm()
+    # llm.invoke("hi")
+    api_keys = _validate_env()
+    print(api_keys["GOOGLE_API_KEY1"])

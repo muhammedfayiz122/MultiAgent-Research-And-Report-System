@@ -1,0 +1,24 @@
+# Research Report: India's Rising Per Capita Income and its Differential Impact
+
+## Market Snapshot
+India's economy is growing, but wealth inequality is a significant concern. The top 1% holds a disproportionate amount of wealth, while the bottom 50% struggles. GDP per capita remains low compared to other nations.
+
+## Key Financial Events
+*   **Wealth Inequality:** The top 1% of India's population holds over 40% of the nation's wealth, while the bottom 50% owns only 3% (Source 1). The top 10% earn over 57% of the national income (Source 1).
+*   **Income Disparity:** Income inequality in India is reportedly worse than under British rule (Source 7).
+*   **Poverty Reduction:** Poverty in India had fallen to a historic low in 2022 (Source 8).
+
+## Data & Sources
+*   World Inequality Report 2022 (Source 1)
+*   Oxfam International (Source 2)
+*   Wikipedia - Economy of India (Source 3)
+*   Reddit - Economics (Source 4)
+*   Deccan Herald (Source 5)
+*   World Inequality Lab (Source 6)
+*   TIME (Source 7)
+*   United Nations University (Source 8)
+
+*(All sources accessed between June 12-13, 2024)*
+
+## Investment/Business Implications
+Rising per capita income does not translate to equal benefits across the population. Investors and businesses should consider the vast income disparity and tailor their strategies accordingly. Focus on inclusive growth and addressing the needs of the lower-income segments may unlock significant market potential.

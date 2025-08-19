@@ -8,6 +8,9 @@ from langgraph.types import Command
 from langgraph.prebuilt import create_react_agent
 from multiAgent_research_and_report_system.utils.model_loader import model_loader
 from multiAgent_research_and_report_system.src.agent_state import State
+from multiAgent_research_and_report_system.logger.cloud_logger import CustomLogger
+
+log = CustomLogger().get_logger(__name__)
 
 llm = model_loader()
 
@@ -16,7 +19,7 @@ def getDocumentSummarizerAgent():
     # llm = model_loader()
     summarizer_agent = create_react_agent(
         llm,
-        tools=[write_file],
+        tools=[read_file, write_file],
         prompt=summarizer_prompt,
     )
     return summarizer_agent
@@ -24,14 +27,15 @@ def getDocumentSummarizerAgent():
 def summary_node(state: State) -> Command[Literal["report_supervisor"]]:
     print("<------inside summary agent----->")
     summarizer_agent = getDocumentSummarizerAgent()
-    print("entering summary react agent")
     result = summarizer_agent.invoke(state)
-    print("exit from summary react agent")
-    print(f"from summary team: \n{state}")
+    print(f"from summary team result: \n{result}")
+    log.info(f"from summary team result: \n{result}")
+    output = result["messages"][-1].content
+    output += "Now, you should immediately call the Doc_Generator."
     return Command(
         update={
             "messages": [
-                HumanMessage(content=result["messages"][-1].content, name="summarizer")
+                HumanMessage(content=output, name="summarizer")
             ]
         },
         goto="report_supervisor",

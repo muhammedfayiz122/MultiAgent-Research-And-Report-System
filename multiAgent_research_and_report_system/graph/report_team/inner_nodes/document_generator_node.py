@@ -7,6 +7,9 @@ from langgraph.types import Command
 from langgraph.prebuilt import create_react_agent
 from multiAgent_research_and_report_system.utils.model_loader import model_loader
 from multiAgent_research_and_report_system.src.agent_state import State
+from multiAgent_research_and_report_system.logger.cloud_logger import CustomLogger
+
+log = CustomLogger().get_logger(__name__)
 
 llm = model_loader()
 
@@ -15,7 +18,7 @@ def getDocumentGeneratorAgent():
     document_generator_prompt = PROMPT_REGISTRY["document_generator"]
     doc_generator_agent = create_react_agent(
         llm,
-        tools=[create_pdf_tool],
+        tools=[read_file,create_pdf_tool],
         prompt=document_generator_prompt
     )
     return doc_generator_agent
@@ -25,10 +28,13 @@ def doc_generator_node(state: State) -> Command[Literal["report_supervisor"]]:
     print("<------inside doc generator agent----->")
     doc_generator_agent = getDocumentGeneratorAgent()
     result = doc_generator_agent.invoke(state)
+    output = result["messages"][-1].content
+    log.info(f"from doc generator team result: \n{result}")
+    
     return Command(
         update={
             "messages": [
-                HumanMessage(content=result["messages"][-1].content, name="doc_generator")
+                HumanMessage(content=f"{output} Now, you should terminate immediately by saying FINISH.", name="doc_generator")
             ]
         },
         goto="report_supervisor",

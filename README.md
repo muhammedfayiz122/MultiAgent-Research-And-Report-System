@@ -81,11 +81,12 @@ pip install -r requirements.txt
 
 ### 3. Run the Streamlit Demo
 ```bash
-streamlit run app.py
+python -m streamlit run multiAgent_research_and_report_system/app.py
+
 ```
 - Enter your query.
 - Let the system auto-detect the task and dispatch appropriate agents.
-- Download the generated report (if applicable) directly from the UI.
+- Download the generated report directly from the UI.
 
 ---
 

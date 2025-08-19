@@ -1,7 +1,7 @@
 from multiAgent_research_and_report_system.graph.research_team.inner_nodes.finance_research_node import finance_research_node
 from multiAgent_research_and_report_system.graph.research_team.inner_nodes.medical_research_node import medical_research_node 
 from langgraph.graph import StateGraph, START, END
-from multiAgent_research_and_report_system.src.agent_state import State
+from multiAgent_research_and_report_system.utils.agent_state import State
 from multiAgent_research_and_report_system.logger.cloud_logger import CustomLogger
 
 

@@ -3,12 +3,12 @@ from multiAgent_research_and_report_system.src.supervisor_util import make_super
 from multiAgent_research_and_report_system.graph.report_team.inner_nodes.document_summarizer_node import summary_node
 from multiAgent_research_and_report_system.graph.report_team.inner_nodes.document_generator_node import doc_generator_node
 from langgraph.graph import StateGraph, START, END
-from multiAgent_research_and_report_system.src.agent_state import State
+from multiAgent_research_and_report_system.utils.agent_state import State
 from typing import Literal, Callable
 from langchain_core.language_models.chat_models import BaseChatModel
 from langgraph.types import Command
 from typing_extensions import TypedDict
-from multiAgent_research_and_report_system.src.agent_state import State
+from multiAgent_research_and_report_system.utils.agent_state import State
 from multiAgent_research_and_report_system.prompts.prompt import PROMPT_REGISTRY
 from typing import Annotated, Optional
 from multiAgent_research_and_report_system.logger.cloud_logger import CustomLogger

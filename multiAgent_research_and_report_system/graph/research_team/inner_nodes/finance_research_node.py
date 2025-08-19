@@ -7,7 +7,7 @@ from multiAgent_research_and_report_system.prompts import prompt
 from multiAgent_research_and_report_system.tools.file_tool import write_file
 from multiAgent_research_and_report_system.tools.search_tool import enhanced_search
 from multiAgent_research_and_report_system.utils.model_loader import model_loader
-from multiAgent_research_and_report_system.src.agent_state import State
+from multiAgent_research_and_report_system.utils.agent_state import State
 from multiAgent_research_and_report_system.logger.cloud_logger import CustomLogger
 
 llm = model_loader()

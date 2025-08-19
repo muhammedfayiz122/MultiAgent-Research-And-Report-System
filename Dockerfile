@@ -45,7 +45,7 @@ USER appuser
 COPY . .
 
 # Expose the port that the application listens on.
-EXPOSE 5081
+EXPOSE 8501
 
 # Run the application.
 CMD python -m streamlit run multiAgent_research_and_report_system.app.py

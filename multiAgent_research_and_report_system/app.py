@@ -58,6 +58,8 @@ if st.button("Run Agent System"):
                     for k in msg.keys():
                         if k == "next":
                             print(f"{agent}: {msg} ")
+                            if "end" in str(msg['next']):
+                                st.success("✅ Report generated successfully!")
                             with st.chat_message(agent, avatar='👤'):
                                 st.markdown(agent)
                                 st.markdown(f"Handoff to {msg['next']}")

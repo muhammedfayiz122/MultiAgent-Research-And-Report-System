@@ -44,9 +44,8 @@ Use this system to:
 
 ##  Architecture & Workflow
 
-```
+
 ![MARRS Architecture & Workflow](img/graph.png)
-```
 
 - Inputs are processed via a **supervisor agent**.
 - Results are saved in per-session folders for isolation and traceability.

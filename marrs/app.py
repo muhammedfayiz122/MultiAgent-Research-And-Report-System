@@ -2,8 +2,8 @@ import streamlit as st
 import os
 import uuid
 from langchain_core.messages import HumanMessage, AIMessage
-from multiAgent_research_and_report_system.graph.supervisor import getSupervisorGraph
-# from multiAgent_research_and_report_system.logger.cloud_logger import CustomLogger
+from marrs.graph.supervisor import getSupervisorGraph
+# from marrs.logger.cloud_logger import CustomLogger
 import re
 
 # log = CustomLogger().get_logger(__name__)

@@ -1,15 +1,15 @@
-from multiAgent_research_and_report_system.graph.research_team.inner_nodes.finance_research_node import finance_research_node
-from multiAgent_research_and_report_system.graph.research_team.inner_nodes.medical_research_node import medical_research_node 
+from marrs.graph.research_team.inner_nodes.finance_research_node import finance_research_node
+from marrs.graph.research_team.inner_nodes.medical_research_node import medical_research_node 
 from langgraph.graph import StateGraph, START, END
-from multiAgent_research_and_report_system.utils.agent_state import State
-from multiAgent_research_and_report_system.logger.cloud_logger import CustomLogger
+from marrs.utils.agent_state import State
+from marrs.logger.cloud_logger import CustomLogger
 
 
 from typing import Literal, Callable, Optional, Annotated
 from langchain_core.language_models.chat_models import BaseChatModel
 from langgraph.types import Command
 from typing_extensions import TypedDict
-from multiAgent_research_and_report_system.prompts.prompt import PROMPT_REGISTRY
+from marrs.prompts.prompt import PROMPT_REGISTRY
 
 log = CustomLogger().get_logger(__name__)
 
@@ -67,7 +67,7 @@ def getResearchTeamGraph(llm):
     return research_graph
 
 if __name__ == "__main__":
-    from multiAgent_research_and_report_system.utils.model_loader import model_loader
+    from marrs.utils.model_loader import model_loader
     llm = model_loader()
     research_graph = getResearchTeamGraph(llm)
     for message in research_graph.stream(

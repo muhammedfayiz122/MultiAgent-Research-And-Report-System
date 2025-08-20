@@ -1,21 +1,20 @@
-from multiAgent_research_and_report_system.src.supervisor_util import make_supervisor_node
-from multiAgent_research_and_report_system.utils.model_loader import model_loader
-from multiAgent_research_and_report_system.graph.research_team.research_team import getResearchTeamGraph
-from multiAgent_research_and_report_system.graph.report_team.report_team import getReportTeamGraph
+from marrs.utils.model_loader import model_loader
+from marrs.graph.research_team.research_team import getResearchTeamGraph
+from marrs.graph.report_team.report_team import getReportTeamGraph
 from langgraph.graph import StateGraph, START, END
-from multiAgent_research_and_report_system.utils.agent_state import State
+from marrs.utils.agent_state import State
 from typing import Literal
 from langchain_core.messages import HumanMessage
 from langgraph.types import Command
-from multiAgent_research_and_report_system.utils.model_loader import model_loader
-from multiAgent_research_and_report_system.utils.agent_state import State
+from marrs.utils.model_loader import model_loader
+from marrs.utils.agent_state import State
 from typing import Literal, Callable
 from langchain_core.language_models.chat_models import BaseChatModel
 from langgraph.types import Command
 from typing_extensions import TypedDict
-from multiAgent_research_and_report_system.utils.agent_state import State
-from multiAgent_research_and_report_system.prompts.prompt import PROMPT_REGISTRY
-from multiAgent_research_and_report_system.logger.cloud_logger import CustomLogger
+from marrs.utils.agent_state import State
+from marrs.prompts.prompt import PROMPT_REGISTRY
+from marrs.logger.cloud_logger import CustomLogger
 
 log = CustomLogger().get_logger(__name__)
 

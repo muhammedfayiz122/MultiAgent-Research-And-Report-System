@@ -3,12 +3,12 @@ from langchain_core.messages import HumanMessage
 from langgraph.types import Command
 
 from langgraph.prebuilt import create_react_agent
-from multiAgent_research_and_report_system.prompts import prompt
-from multiAgent_research_and_report_system.tools.file_tool import write_file
-from multiAgent_research_and_report_system.tools.search_tool import enhanced_search
-from multiAgent_research_and_report_system.utils.model_loader import model_loader
-from multiAgent_research_and_report_system.utils.agent_state import State
-from multiAgent_research_and_report_system.logger.cloud_logger import CustomLogger
+from marrs.prompts import prompt
+from marrs.tools.file_tool import write_file
+from marrs.tools.search_tool import enhanced_search
+from marrs.utils.model_loader import model_loader
+from marrs.utils.agent_state import State
+from marrs.logger.cloud_logger import CustomLogger
 
 llm = model_loader()
 log = CustomLogger().get_logger(__name__)

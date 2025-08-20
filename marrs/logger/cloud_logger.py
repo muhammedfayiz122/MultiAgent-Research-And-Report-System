@@ -1,7 +1,7 @@
 import os
 import logging
 from datetime import datetime
-from multiAgent_research_and_report_system.utils.config_loader import load_config
+from marrs.utils.config_loader import load_config
 from logging.handlers import RotatingFileHandler
 import structlog
 

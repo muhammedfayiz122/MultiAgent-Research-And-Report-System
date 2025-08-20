@@ -1,8 +1,8 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_groq import ChatGroq
-from multiAgent_research_and_report_system.logger.cloud_logger import CustomLogger
-from multiAgent_research_and_report_system.exception.custom_exception import CustomException
-from multiAgent_research_and_report_system.utils.config_loader import load_config
+from marrs.logger.cloud_logger import CustomLogger
+from marrs.exception.custom_exception import CustomException
+from marrs.utils.config_loader import load_config
 from dotenv import load_dotenv
 import sys
 import os

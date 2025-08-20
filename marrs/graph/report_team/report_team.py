@@ -1,17 +1,17 @@
-from multiAgent_research_and_report_system.src.supervisor_util import make_supervisor_node
+from marrs.src.supervisor_util import make_supervisor_node
 
-from multiAgent_research_and_report_system.graph.report_team.inner_nodes.document_summarizer_node import summary_node
-from multiAgent_research_and_report_system.graph.report_team.inner_nodes.document_generator_node import doc_generator_node
+from marrs.graph.report_team.inner_nodes.document_summarizer_node import summary_node
+from marrs.graph.report_team.inner_nodes.document_generator_node import doc_generator_node
 from langgraph.graph import StateGraph, START, END
-from multiAgent_research_and_report_system.utils.agent_state import State
+from marrs.utils.agent_state import State
 from typing import Literal, Callable
 from langchain_core.language_models.chat_models import BaseChatModel
 from langgraph.types import Command
 from typing_extensions import TypedDict
-from multiAgent_research_and_report_system.utils.agent_state import State
-from multiAgent_research_and_report_system.prompts.prompt import PROMPT_REGISTRY
+from marrs.utils.agent_state import State
+from marrs.prompts.prompt import PROMPT_REGISTRY
 from typing import Annotated, Optional
-from multiAgent_research_and_report_system.logger.cloud_logger import CustomLogger
+from marrs.logger.cloud_logger import CustomLogger
 
 log = CustomLogger().get_logger(__name__)
 
@@ -81,7 +81,7 @@ def getReportTeamGraph(llm):
     return report_team_graph
 
 if __name__ == "__main__":
-    from multiAgent_research_and_report_system.utils.model_loader import model_loader
+    from marrs.utils.model_loader import model_loader
     llm = model_loader()
     report_graph = getReportTeamGraph(llm)
     query = """
@@ -90,4 +90,4 @@ if __name__ == "__main__":
     for message in report_graph.stream({"messages": [("user", query)]}, {"recursion_limit": 20}): #type: ignore
         print(message)
         
-    # python -m multiAgent_research_and_report_system.graph.report_team.report_team
+    # python -m marrs.graph.report_team.report_team

@@ -10,23 +10,21 @@ from marrs.utils.model_loader import model_loader
 from marrs.src.agent_state import State
 from marrs.prompts.prompt import PROMPT_REGISTRY
 from marrs.logger.cloud_logger import CustomLogger
-from marrs.graph.research_team.research_team import getResearchTeamGraph
-from marrs.graph.report_team.report_team import getReportTeamGraph
+from marrs.graph.research_team.research_team import ResearchTeam
+from marrs.graph.report_team.report_team import ReportTeam
 from marrs.src.routers import getSupervisorRouter
 
-class Router(BaseModel):
-    next: Literal[*(["FINISH"] + self.members)]  # type: ignore
-
 class SupervisorGraph:
+    members = ["research_supervisor", "report_supervisor"]
+    
     def __init__(self):
         self.log = CustomLogger().get_logger(__name__)
         self.llm = model_loader()
-        self.members = ["research_supervisor", "report_supervisor"]
         self.options = self.members + ["FINISH"]
-        self.system_prompt = PROMPT_REGISTRY["main_supervisor"].format(
-            members=", ".join(self.members)
-        )
-        self.router = getSupervisorRouter(self.options)
+        self.system_prompt = PROMPT_REGISTRY["main_supervisor"].format(members=", ".join(self.members))
+        self.Router = getSupervisorRouter(self.options)
+        self.research_team_graph = ResearchTeam(self.llm).getResearchTeamGraph()
+        self.report_team_graph = ReportTeam(self.llm).getReportTeamGraph()
 
     def supervisor_node(self, state: State) -> Command[Literal[*members, "__end__"]]: #type: ignore
         """
@@ -49,7 +47,7 @@ class SupervisorGraph:
         ] + state["messages"]
 
         # Invoke the LLM
-        response = self.llm.with_structured_output(Router).invoke(messages)
+        response = self.llm.with_structured_output(self.Router).invoke(messages)
         self.log.info(f"Supervisor response: {response}")
         print(f"from supervisor: \n{response}")
 
@@ -82,8 +80,7 @@ class SupervisorGraph:
         Returns:
             Command[Literal["supervisor"]]: The command to go back to the supervisor.
         """
-        research_graph = getResearchTeamGraph(self.llm)
-        response = research_graph.invoke({"messages": state["messages"]}) #type: ignore
+        response = self.research_team_graph.invoke({"messages": state["messages"]}) #type: ignore
         return Command(
             update={
                 "messages": [
@@ -106,10 +103,9 @@ class SupervisorGraph:
         Returns:
             Command[Literal["supervisor"]]: The command to go back to the supervisor.
         """
-        report_graph = getReportTeamGraph(self.llm)
 
         # Invoke the report team graph
-        response = report_graph.invoke(
+        response = self.report_team_graph.invoke(
             {"messages": state["messages"]}, #type: ignore
             {"recursion_limit": 20}
         )

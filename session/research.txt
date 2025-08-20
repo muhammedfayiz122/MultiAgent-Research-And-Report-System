@@ -1,24 +1,24 @@
-# Research Report: India's Rising Per Capita Income and its Differential Impact
+## Behavioral Finance and Emotional Influences on Investment Decisions
 
-## Market Snapshot
-India's economy is growing, but wealth inequality is a significant concern. The top 1% holds a disproportionate amount of wealth, while the bottom 50% struggles. GDP per capita remains low compared to other nations.
+### Market Snapshot
+Behavioral finance studies the impact of psychological factors, including emotions and biases, on investors' financial decisions. It acknowledges that investors don't always make rational decisions in their best interest.
 
-## Key Financial Events
-*   **Wealth Inequality:** The top 1% of India's population holds over 40% of the nation's wealth, while the bottom 50% owns only 3% (Source 1). The top 10% earn over 57% of the national income (Source 1).
-*   **Income Disparity:** Income inequality in India is reportedly worse than under British rule (Source 7).
-*   **Poverty Reduction:** Poverty in India had fallen to a historic low in 2022 (Source 8).
+### Key Financial Events
+*   **Emotional Impact:** Emotions like fear, greed, sadness, anger, shame, and joy can trigger poor investment decisions.
+*   **Behavioral Biases:** Cognitive and emotional biases affect an investor's ability to process information rationally.
+*   **Emotional Intelligence (EI):** Studies suggest a positive relationship between EI and investment decisions, with individuals possessing greater EI potentially making better choices.
 
-## Data & Sources
-*   World Inequality Report 2022 (Source 1)
-*   Oxfam International (Source 2)
-*   Wikipedia - Economy of India (Source 3)
-*   Reddit - Economics (Source 4)
-*   Deccan Herald (Source 5)
-*   World Inequality Lab (Source 6)
-*   TIME (Source 7)
-*   United Nations University (Source 8)
+### Data & Sources (with Timestamps)
+*   Empower.com - "How behavioral finance impacts your money decisions" (Recent)
+*   Investopedia - "Behavioral Finance: Biases, Emotions and Financial Behavior" (Recent)
+*   Morgan Stanley - "How to Take the Emotion Out of Investing" (Recent)
+*   Cerity Partners - "Investment Decisions: The Impact of Emotion and Behavioral Bias" (Recent)
+*   GSAM - "Misbehavioral Finance: Countering Emotional Investment Decisions" (Recent)
+*   Key.com - "Behavioral Finance: How Emotions and Biases Can Drive Financial ..." (Recent)
+*   WM.edu - "5 Behavioral Biases That Can Impact Your Investing Decisions" (Feb 5, 2025)
+*   ScienceDirect - "The influence of emotional intelligence and behavioural biases on ..." (Recent)
 
-*(All sources accessed between June 12-13, 2024)*
-
-## Investment/Business Implications
-Rising per capita income does not translate to equal benefits across the population. Investors and businesses should consider the vast income disparity and tailor their strategies accordingly. Focus on inclusive growth and addressing the needs of the lower-income segments may unlock significant market potential.
+### Investment/Business Implications
+*   Understanding behavioral finance can help investors identify and avoid unconscious behaviors that lead to poor decisions.
+*   Acknowledging emotions without acting solely on them is crucial for sound investment strategies.
+*   Addressing biases before they unduly influence the investment decision-making process is essential.

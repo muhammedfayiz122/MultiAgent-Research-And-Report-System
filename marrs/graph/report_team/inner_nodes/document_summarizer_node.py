@@ -24,7 +24,7 @@ def getDocumentSummarizerAgent():
     )
     return summarizer_agent
 
-def summary_node(state: State) -> Command[Literal["report_supervisor"]]:
+def summarizer_node(state: State) -> Command[Literal["report_supervisor"]]:
     print("<------inside summary agent----->")
     summarizer_agent = getDocumentSummarizerAgent()
     result = summarizer_agent.invoke(state)

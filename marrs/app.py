@@ -60,6 +60,7 @@ if st.button("Run Agent System"):
                             print(f"{agent}: {msg} ")
                             if "end" in str(msg['next']):
                                 st.success("✅ Report generated successfully!")
+                                continue
                             with st.chat_message(agent, avatar='👤'):
                                 st.markdown(agent)
                                 st.markdown(f"Handoff to {msg['next']}")
@@ -67,7 +68,7 @@ if st.button("Run Agent System"):
                             with st.chat_message('ai'):
                                 st.markdown(agent)
                                 try:
-                                    st.markdown(list(msg[k])[0].content)
+                                    st.markdown(str(list(msg[k])[0].content).replace("Now, you should terminate immediately by saying FINISH.",""))
                                 except:
                                     cleaned_text = clean_text(list(msg[k])[0])
                                     if cleaned_text:

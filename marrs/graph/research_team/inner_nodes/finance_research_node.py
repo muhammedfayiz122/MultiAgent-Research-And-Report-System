@@ -7,7 +7,7 @@ from marrs.prompts import prompt
 from marrs.tools.file_tool import write_file
 from marrs.tools.search_tool import enhanced_search
 from marrs.utils.model_loader import model_loader
-from marrs.utils.agent_state import State
+from marrs.src.agent_state import State
 from marrs.logger.cloud_logger import CustomLogger
 
 llm = model_loader()

@@ -2,7 +2,7 @@ import streamlit as st
 import os
 import uuid
 from langchain_core.messages import HumanMessage, AIMessage
-from marrs.graph.supervisor import getSupervisorGraph
+from marrs.graph.supervisor import SupervisorGraph
 # from marrs.logger.cloud_logger import CustomLogger
 import re
 
@@ -42,7 +42,7 @@ if st.button("Run Agent System"):
         st.info("🤖 Routing to the appropriate agent...")
 
         # --- Import Graphs ---
-        supervisor_graph = getSupervisorGraph()
+        supervisor_graph = SupervisorGraph().getSupervisorGraph()
 
         for message in supervisor_graph.stream(
             {"messages": [("user", query)]}, # type: ignore

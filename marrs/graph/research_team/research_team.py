@@ -1,7 +1,7 @@
 from marrs.graph.research_team.inner_nodes.finance_research_node import finance_research_node
 from marrs.graph.research_team.inner_nodes.medical_research_node import medical_research_node 
 from langgraph.graph import StateGraph, START, END
-from marrs.utils.agent_state import State
+from marrs.src.agent_state import State
 from marrs.logger.cloud_logger import CustomLogger
 
 

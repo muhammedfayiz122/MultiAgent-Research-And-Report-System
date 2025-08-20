@@ -1,123 +1,147 @@
-from marrs.utils.model_loader import model_loader
-from marrs.graph.research_team.research_team import getResearchTeamGraph
-from marrs.graph.report_team.report_team import getReportTeamGraph
-from langgraph.graph import StateGraph, START, END
-from marrs.utils.agent_state import State
-from typing import Literal
-from langchain_core.messages import HumanMessage
-from langgraph.types import Command
-from marrs.utils.model_loader import model_loader
-from marrs.utils.agent_state import State
 from typing import Literal, Callable
-from langchain_core.language_models.chat_models import BaseChatModel
+
+from pydantic import BaseModel
+
+from langgraph.graph import StateGraph, START, END
 from langgraph.types import Command
-from typing_extensions import TypedDict
-from marrs.utils.agent_state import State
+from langchain_core.messages import HumanMessage
+
+from marrs.utils.model_loader import model_loader
+from marrs.src.agent_state import State
 from marrs.prompts.prompt import PROMPT_REGISTRY
 from marrs.logger.cloud_logger import CustomLogger
+from marrs.graph.research_team.research_team import getResearchTeamGraph
+from marrs.graph.report_team.report_team import getReportTeamGraph
+from marrs.src.routers import getSupervisorRouter
 
-log = CustomLogger().get_logger(__name__)
+class Router(BaseModel):
+    next: Literal[*(["FINISH"] + self.members)]  # type: ignore
 
-llm = model_loader()
+class SupervisorGraph:
+    def __init__(self):
+        self.log = CustomLogger().get_logger(__name__)
+        self.llm = model_loader()
+        self.members = ["research_supervisor", "report_supervisor"]
+        self.options = self.members + ["FINISH"]
+        self.system_prompt = PROMPT_REGISTRY["main_supervisor"].format(
+            members=", ".join(self.members)
+        )
+        self.router = getSupervisorRouter(self.options)
 
-def make_supervisor_node(llm: BaseChatModel, members: list[str]) -> Callable:
-    options = ["FINISH"] + members
-    system_prompt = PROMPT_REGISTRY["main_supervisor"].format(members=", ".join(members))
-    class Router(TypedDict):
-        """Worker to route to next. If no workers needed, route to FINISH."""
-        next: Literal[*options] #type: ignore
+    def supervisor_node(self, state: State) -> Command[Literal[*members, "__end__"]]: #type: ignore
+        """
+        Supervisor node for the state graph.
+        
+        This node:
+        - Receives messages from the user.
+        - Routes the messages to the appropriate team (research or report).
+        - Returns the response from the team back to the user.
 
-    def supervisor_node(state: State) -> Command[Literal[*members, "__end__"]]: #type: ignore
-        """An LLM-based router."""
-        message_count = len(state["messages"])
+        args:
+            state (State): The current state of the conversation.
+
+        returns:
+            Command[Literal[*members, "__end__"]]: The command to execute next.
+        """
+        # Prepare messages for the LLM
         messages = [
-            {"role": "system", "content": system_prompt},
+            {"role": "system", "content": self.system_prompt},
         ] + state["messages"]
-        response = llm.with_structured_output(Router).invoke(messages)
-        log.info(f"Supervisor response: {response}")
+
+        # Invoke the LLM
+        response = self.llm.with_structured_output(Router).invoke(messages)
+        self.log.info(f"Supervisor response: {response}")
         print(f"from supervisor: \n{response}")
+
+        # Determine the next node to go to
         goto = response["next"] #type: ignore
+
+        # Determine the last message and state message count
         last_message = str(state["messages"][-1].content).lower()
+        state_message_count = len(state["messages"])
+
+        # Determine if we need to finish or handoff
         if goto == "FINISH" or last_message.endswith("finish."):
             goto = END
-            log.info(f"Overall state is : {state}")
-        elif message_count > 1 and goto == members[0]:
-            log.warning(f"Forced handoff to stop looping")
+            self.log.info(f"Overall state is : {state}")
+        elif state_message_count > 1 and goto == self.members[0]:
+            self.log.warning(f"Forced handoff to stop looping")
             print("Forced handoff to stop looping")
-            goto = members[1]
+            goto = self.members[1]
+            
         return Command(goto=goto, update={"next": goto})
-    
-    return supervisor_node
 
-def getSupervisorNode():
-    """
-    Get the supervisor node .
-    """
-    # llm = model_loader()
-    supervisor_node = make_supervisor_node(llm, ["research_supervisor", "report_supervisor"])
-    return supervisor_node
 
-def callResearchTeam(state: State) -> Command[Literal["supervisor"]]:
-    """
-    Call the research team and return results to supervisor.
-    """
-    research_graph = getResearchTeamGraph(llm)
-    response = research_graph.invoke({"messages": state["messages"]}) #type: ignore
-    return Command(
-        update={
-            "messages": [
-                HumanMessage(
-                    content=response["messages"][-1].content, 
-                    name="research_supervisor"
-                )
-            ]
-        },
-        goto="supervisor",
-    )
-    
-def callReportTeam(state: State) -> Command[Literal["supervisor"]]:
-    """
-    Call the report team and return results to main supervisor.
-    """
-    report_graph = getReportTeamGraph(llm)
+    def callResearchTeam(self, state: State) -> Command[Literal["supervisor"]]:
+        """
+        Call the research team and return results to supervisor.
 
-    # Invoke the report team graph
-    response = report_graph.invoke(
-        {"messages": state["messages"]}, #type: ignore
-        {"recursion_limit": 20}
-    )
+        Args:
+            state (State): The current state of the conversation.
+            
+        Returns:
+            Command[Literal["supervisor"]]: The command to go back to the supervisor.
+        """
+        research_graph = getResearchTeamGraph(self.llm)
+        response = research_graph.invoke({"messages": state["messages"]}) #type: ignore
+        return Command(
+            update={
+                "messages": [
+                    HumanMessage(
+                        content=response["messages"][-1].content, 
+                        name="research_supervisor"
+                    )
+                ]
+            },
+            goto="supervisor",
+        )
+        
+    def callReportTeam(self, state: State) -> Command[Literal["supervisor"]]:
+        """
+        Call the report team and return results to main supervisor.
+        
+        Args:
+            state (State): The current state of the conversation.
 
-    # Extract the last message
-    message = str(response["messages"][-1].content)
-    return Command(
-        update={
-            "messages": [
-                HumanMessage(
-                    content=message, 
-                    name="report_supervisor"
-                )
-            ]
-        },
-        goto="supervisor",
-    )
+        Returns:
+            Command[Literal["supervisor"]]: The command to go back to the supervisor.
+        """
+        report_graph = getReportTeamGraph(self.llm)
 
-def getSupervisorGraph():
-    """
-    Get the supervisor graph which includes the research and report teams.
-    """
-    # Get the supervisor node.
-    supervisor_node = getSupervisorNode()
+        # Invoke the report team graph
+        response = report_graph.invoke(
+            {"messages": state["messages"]}, #type: ignore
+            {"recursion_limit": 20}
+        )
 
-    # Combine the graphs
-    supervisor_graph_builder = StateGraph(State)
-    supervisor_graph_builder.add_node("supervisor", supervisor_node)
-    supervisor_graph_builder.add_node("research_supervisor", callResearchTeam)
-    supervisor_graph_builder.add_node("report_supervisor", callReportTeam)
-    supervisor_graph_builder.add_edge(START, "supervisor")
-    supervisor_graph = supervisor_graph_builder.compile()
-    return supervisor_graph
+        # Extract the last message
+        message = str(response["messages"][-1].content)
+        return Command(
+            update={
+                "messages": [
+                    HumanMessage(
+                        content=message, 
+                        name="report_supervisor"
+                    )
+                ]
+            },
+            goto="supervisor",
+        )
+
+    def getSupervisorGraph(self):
+        """
+        Get the supervisor graph which includes the research and report teams.
+        """
+        # Combine the graphs
+        graph_builder = StateGraph(State)
+        graph_builder.add_node("supervisor", self.supervisor_node)
+        graph_builder.add_node("research_supervisor", self.callResearchTeam)
+        graph_builder.add_node("report_supervisor", self.callReportTeam)
+        graph_builder.add_edge(START, "supervisor")
+        supervisor_graph = graph_builder.compile()
+        return supervisor_graph
 
 if __name__ == "__main__":
-    supervisor_graph = getSupervisorGraph()
+    supervisor_graph = SupervisorGraph().getSupervisorGraph()
     result = supervisor_graph.invoke({"messages": ["What is the current state of the Indian economy?"]}) #type: ignore
     print(result)

@@ -6,7 +6,7 @@ from langchain_core.messages import HumanMessage
 from langgraph.types import Command
 from langgraph.prebuilt import create_react_agent
 from marrs.utils.model_loader import model_loader
-from marrs.utils.agent_state import State
+from marrs.src.agent_state import State
 from marrs.logger.cloud_logger import CustomLogger
 
 log = CustomLogger().get_logger(__name__)

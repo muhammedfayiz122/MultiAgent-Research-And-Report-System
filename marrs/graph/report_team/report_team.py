@@ -3,12 +3,12 @@ from marrs.src.supervisor_util import make_supervisor_node
 from marrs.graph.report_team.inner_nodes.document_summarizer_node import summary_node
 from marrs.graph.report_team.inner_nodes.document_generator_node import doc_generator_node
 from langgraph.graph import StateGraph, START, END
-from marrs.utils.agent_state import State
+from marrs.src.agent_state import State
 from typing import Literal, Callable
 from langchain_core.language_models.chat_models import BaseChatModel
 from langgraph.types import Command
 from typing_extensions import TypedDict
-from marrs.utils.agent_state import State
+from marrs.src.agent_state import State
 from marrs.prompts.prompt import PROMPT_REGISTRY
 from typing import Annotated, Optional
 from marrs.logger.cloud_logger import CustomLogger
